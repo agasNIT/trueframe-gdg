@@ -9,12 +9,15 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "ethers": "^6.17.0",
+    "localforage": "^1.10.0",
     "next": "16.4.2",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",
+    "@types/localforage": "^0.0.33",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
