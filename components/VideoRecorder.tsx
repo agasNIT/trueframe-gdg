@@ -408,26 +408,26 @@ export default function VideoRecorder() {
   return (
     <div className="w-full max-w-4xl mx-auto px-4 py-8 text-neutral-100 font-sans selection:bg-neutral-800">
       {/* Top Header: Monolithic & Minimalist */}
-      <header className="border-b border-neutral-800 pb-5 mb-8 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+      <header className="border-b border-neutral-800 pb-4 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
-          <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 block mb-1">
-            TrueFrame Node // System 01
+          <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 block mb-0.5">
+            System Node 01
           </span>
-          <h1 className="text-xl tracking-tight font-medium text-neutral-200">
+          <h2 className="text-base tracking-tight font-semibold text-neutral-200">
             Hardware Capture &amp; Attestation
-          </h1>
+          </h2>
         </div>
-        <div className="flex items-center gap-2 font-mono text-[11px] text-neutral-500">
+        <div className="flex items-center gap-2 font-mono text-[11px] text-neutral-400 bg-neutral-900/80 px-2.5 py-1 rounded-lg border border-neutral-800">
           <span
             className={`w-1.5 h-1.5 rounded-full ${
               stage === 'recording'
                 ? 'bg-red-500 animate-pulse'
                 : stage === 'completed'
-                ? 'bg-neutral-300'
+                ? 'bg-emerald-400'
                 : 'bg-neutral-600'
             }`}
           />
-          <span className="uppercase">{stage}</span>
+          <span className="uppercase text-[10px] tracking-wider font-medium">{stage}</span>
         </div>
       </header>
 
