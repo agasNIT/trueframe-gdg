@@ -7,6 +7,15 @@
 [![Polygon Amoy](https://img.shields.io/badge/Network-Polygon%20Amoy%20(80002)-8247E5?style=for-the-badge&logo=polygon)](https://polygon.technology/)
 [![Post-Quantum Ready](https://img.shields.io/badge/Post--Quantum-NIST%20FIPS%20204%20(ML--DSA)-blueviolet?style=for-the-badge)](https://csrc.nist.gov/pubs/fips/204/final)
 [![Zero Media Upload](https://img.shields.io/badge/Privacy-100%25%20Zero--Upload-brightgreen?style=for-the-badge)]()
+[![Demo Video](https://img.shields.io/badge/Demo-Video%20Walkthrough-red?style=for-the-badge)](https://drive.google.com/file/d/1med_OCpTcZnB4IhYIKvf2NiHavSFIL9S/view?usp=sharing)
+
+---
+
+## Video Demonstration
+
+Watch the full system demonstration walking through client-side recording, off-thread 256KB Merkle tree hashing, hardware-isolated WebCrypto signing, Polygon blockchain anchoring, and public tamper detection:
+
+- **Submission Video:** [TrueFrame Video Demonstration (Google Drive)](https://drive.google.com/file/d/1med_OCpTcZnB4IhYIKvf2NiHavSFIL9S/view?usp=sharing)
 
 ---
 
@@ -255,18 +264,6 @@ contract AnchorRegistry {
     }
 }
 ```
-
----
-
-## Deploying to Vercel
-
-1. Push your repository to GitHub.
-2. Import the project in the [Vercel Dashboard](https://vercel.com/new).
-3. Under **Settings -> Environment Variables**, optionally add:
-   - `RELAYER_PRIVATE_KEY`: Your Polygon Amoy relayer key
-   - `NEXT_PUBLIC_POLYGON_AMOY_RPC`: `https://rpc-amoy.polygon.technology/`
-   - `NEXT_PUBLIC_CONTRACT_ADDRESS`: Deployed registry address
-4. Click **Deploy**. Vercel will build and deploy the Next.js App Router application with zero configuration required.
 
 ---
 
