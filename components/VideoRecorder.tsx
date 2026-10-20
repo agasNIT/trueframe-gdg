@@ -276,9 +276,36 @@ export default function VideoRecorder() {
       );
 
       // 3. Geolocation collection & salt commitment
-      const district = 'SoHo / Cast Iron Historic District, New York';
-      const lat = 40.7233;
-      const lon = -74.003;
+      let district = 'Local Node / Verified Region';
+      let lat = 12.9716;
+      let lon = 77.5946;
+
+      try {
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        if (timeZone) {
+          const parts = timeZone.split('/');
+          const city = parts[parts.length - 1].replace(/_/g, ' ');
+          district = `${city} Region (${timeZone})`;
+        }
+      } catch {
+        // fallback
+      }
+
+      if (typeof window !== 'undefined' && 'geolocation' in navigator) {
+        try {
+          const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, {
+              timeout: 2000,
+              maximumAge: 60000,
+              enableHighAccuracy: false,
+            });
+          });
+          lat = pos.coords.latitude;
+          lon = pos.coords.longitude;
+        } catch {
+          // Keep timezone-derived region if GPS permission is declined or unavailable
+        }
+      }
 
       const saltArray = new Uint8Array(16);
       window.crypto.getRandomValues(saltArray);
