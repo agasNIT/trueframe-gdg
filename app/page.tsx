@@ -75,23 +75,23 @@ export default function Home() {
       {/* Header & Cryptographic Status */}
       <header className="border-b border-zinc-800 pb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-              WebCrypto Level 2 & NIST FIPS 204
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              Polygon Amoy (80002)
             </span>
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
-              IndexedDB Structured Clone
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-zinc-800 text-zinc-300 border border-zinc-700">
+              Zero-Media Upload
             </span>
           </div>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight mt-2 text-white">
-            Cryptographic Enclave & PQC PWA
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white">
+            TrueFrame
           </h1>
           <p className="text-sm text-zinc-400 mt-1">
-            Zero-exposure hardware/sandbox-isolated key storage with post-quantum migration layer.
+            Client-Side Cryptographic Video Attestation &amp; Verification Protocol
           </p>
         </div>
 
-        <div className="flex items-center gap-3 bg-zinc-900 border border-zinc-800 p-3 rounded-xl">
+        <div className="flex items-center gap-3 bg-zinc-900 border border-zinc-800 p-3.5 rounded-2xl">
           <div className="h-3 w-3 rounded-full bg-emerald-500 animate-pulse" />
           <div className="text-xs">
             <p className="font-semibold text-zinc-200">
@@ -120,7 +120,7 @@ export default function Home() {
               : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
           }`}
         >
-          TrueFrame Attestation Node
+          Record Video
         </button>
         <button
           onClick={() => setActiveTab('capture')}
@@ -130,7 +130,7 @@ export default function Home() {
               : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
           }`}
         >
-          Forensic Watermark Synthesizer
+          Watermark Studio
         </button>
         <button
           onClick={() => setActiveTab('crypto')}
@@ -140,8 +140,53 @@ export default function Home() {
               : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900'
           }`}
         >
-          WebCrypto &amp; Post-Quantum Vault
+          Crypto Vault
         </button>
+      </div>
+
+      {/* Active Tab Subtitle & One-Line Description */}
+      <div className="bg-zinc-900/50 border border-zinc-800/70 rounded-xl px-5 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 className="text-sm font-bold text-zinc-100 flex items-center gap-2">
+            {activeTab === 'recorder' && (
+              <>
+                <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                TrueFrame Attestation Node
+              </>
+            )}
+            {activeTab === 'capture' && (
+              <>
+                <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                Forensic Watermark Synthesizer
+              </>
+            )}
+            {activeTab === 'crypto' && (
+              <>
+                <span className="h-2 w-2 rounded-full bg-purple-400" />
+                WebCrypto &amp; Post-Quantum Vault
+              </>
+            )}
+          </h2>
+          <p className="text-xs text-zinc-400 mt-0.5">
+            {activeTab === 'recorder' &&
+              'Capture video locally with hardware-isolated WebCrypto P-256 signing, 256KB Merkle hashing, and Polygon Amoy anchoring.'}
+            {activeTab === 'capture' &&
+              'Synthesize real-time overt HUD telemetry and covert pixel steganography directly into the video stream.'}
+            {activeTab === 'crypto' &&
+              'Inspect non-extractable client keypairs and benchmark NIST FIPS 204 ML-DSA post-quantum lattice signatures.'}
+          </p>
+        </div>
+
+        {activeTab === 'crypto' && (
+          <div className="flex flex-wrap items-center gap-2 self-start sm:self-center">
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              WebCrypto Level 2 &amp; NIST FIPS 204
+            </span>
+            <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
+              IndexedDB Structured Clone
+            </span>
+          </div>
+        )}
       </div>
 
       {activeTab === 'recorder' ? (
@@ -364,22 +409,6 @@ export default function Home() {
       </div>
     </>
   )}
-
-      {/* Cryptographic Architecture Summary Footer */}
-      <footer className="bg-zinc-900/40 border border-zinc-800/60 rounded-2xl p-6 text-xs text-zinc-400 space-y-3">
-        <h3 className="font-semibold text-zinc-200 text-sm">Senior Cryptographic Engineering Design Rationale</h3>
-        <ul className="list-disc pl-5 space-y-1.5 text-zinc-400">
-          <li>
-            <strong className="text-zinc-300">W3C Structured Clone & Key Isolation:</strong> Non-extractable WebCrypto keys (`extractable: false`) are stored in IndexedDB as live <code className="text-zinc-200">CryptoKey</code> handles. Key bytes never enter the JavaScript execution heap, mitigating heap-scraping attacks and XSS exfiltration.
-          </li>
-          <li>
-            <strong className="text-zinc-300">Origin Boundary:</strong> IndexedDB is strictly sandboxed to the Origin. Keys cannot be accessed by third-party frames or cross-origin scripts.
-          </li>
-          <li>
-            <strong className="text-zinc-300">NIST Post-Quantum Transition:</strong> ML-DSA (FIPS 204 / Dilithium) provides module-lattice-based digital signatures resisting Shor&apos;s algorithm on quantum computers. The simulation matches exact parameter matrices ($q=8380417$, rings $R_q$) and byte layouts to facilitate drop-in migration when WebCrypto standardizes PQC primitives.
-          </li>
-        </ul>
-      </footer>
     </div>
   );
 }

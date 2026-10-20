@@ -99,7 +99,7 @@ To prevent UI freezing during large video captures, a dedicated Web Worker (`wor
 - Leaves are sorted and pairs hashed as `SHA-256(leafA || leafB)`.
 - Even 1-bit changes to any frame invalidate the root hash.
 
-### 3. 🔐 Non-Extractable WebCrypto ECDSA P-256 Keypair
+### 3. 🔐 Non-Extractable WebCrypto ECDSA P-256 Keypair & W3C Structured Clone Isolation
 Device keypairs are generated using:
 ```typescript
 crypto.subtle.generateKey(
@@ -108,7 +108,9 @@ crypto.subtle.generateKey(
   ["sign", "verify"]
 )
 ```
-Where supported by modern mobile devices and hardware modules (Apple Secure Enclave, Android StrongBox/TEE), WebCrypto guarantees keys cannot be extracted by malicious extensions or scripts.
+- **W3C Structured Clone & Key Isolation:** Non-extractable WebCrypto keys (`extractable: false`) are stored in IndexedDB as live `CryptoKey` handles. Key raw bytes never enter the JavaScript execution heap, mitigating heap-scraping attacks and XSS exfiltration.
+- **Hardware Enclave Backing:** Where supported by modern mobile devices and hardware security modules (Apple Secure Enclave, Android StrongBox/TEE), WebCrypto guarantees keys are physically isolated.
+- **Origin Boundary Sandbox:** Storage is strictly sandboxed to the Web Origin, preventing third-party frames or cross-origin scripts from accessing handles.
 
 ### 4. 📜 RFC 8785 Canonical JSON Serialization
 To prevent signature verification failures caused by JSON key re-ordering, spacing discrepancies, or float representation shifts, payloads are canonicalized using RFC 8785 rules prior to signing:
