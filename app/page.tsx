@@ -214,7 +214,7 @@ export default function Home() {
               />
               <button
                 onClick={() => setMessage('Transaction: #TX-' + Math.floor(Math.random() * 100000) + ' | Nonce: ' + Math.floor(Math.random() * 10000000))}
-                className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-xs font-medium rounded-xl transition-colors text-zinc-300"
+                className="px-5 py-2.5 bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-xs font-bold text-zinc-100 rounded-xl border border-zinc-700/80 transition-all shadow-sm tracking-wide"
               >
                 Randomize Nonce
               </button>
@@ -280,8 +280,11 @@ export default function Home() {
             <button
               onClick={handleSignECDSA}
               disabled={isSigningECDSA || !isInitialized}
-              className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-500 disabled:bg-zinc-800 text-white font-medium text-xs rounded-xl transition-colors flex items-center justify-center gap-2"
+              className="w-full py-3.5 px-5 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] disabled:bg-zinc-800 disabled:opacity-50 text-white font-bold text-sm tracking-wide rounded-xl shadow-lg shadow-emerald-950/50 border border-emerald-400/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
+              <svg className="w-4 h-4 text-emerald-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
               {isSigningECDSA ? 'Executing WebCrypto Sign...' : 'Generate ECDSA Digital Signature'}
             </button>
 
@@ -319,15 +322,15 @@ export default function Home() {
             <div className="space-y-4 text-xs">
               {/* Parameter Set Switcher */}
               <div className="flex items-center gap-2">
-                <span className="text-zinc-400">Parameter Set:</span>
+                <span className="text-zinc-400 font-medium">Parameter Set:</span>
                 {(['ML-DSA-44', 'ML-DSA-65', 'ML-DSA-87'] as MLDSAParameterSet[]).map((param) => (
                   <button
                     key={param}
                     onClick={() => handleParamChange(param)}
-                    className={`px-2.5 py-1 rounded-lg text-[11px] font-mono transition-colors ${
+                    className={`px-3.5 py-1.5 rounded-lg text-xs font-bold font-mono transition-all border ${
                       selectedPqcParam === param
-                        ? 'bg-purple-600 text-white font-semibold'
-                        : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'
+                        ? 'bg-purple-600 border-purple-400 text-white shadow-md shadow-purple-950/60 ring-2 ring-purple-500/30'
+                        : 'bg-zinc-800/90 border-zinc-700/80 text-zinc-300 hover:bg-zinc-700 hover:text-white'
                     }`}
                   >
                     {param}
@@ -384,8 +387,11 @@ export default function Home() {
             <button
               onClick={handleSignMLDSA}
               disabled={isSigningMLDSA || !isInitialized}
-              className="w-full py-2.5 px-4 bg-purple-600 hover:bg-purple-500 disabled:bg-zinc-800 text-white font-medium text-xs rounded-xl transition-colors flex items-center justify-center gap-2"
+              className="w-full py-3.5 px-5 bg-purple-600 hover:bg-purple-500 active:scale-[0.99] disabled:bg-zinc-800 disabled:opacity-50 text-white font-bold text-sm tracking-wide rounded-xl shadow-lg shadow-purple-950/50 border border-purple-400/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
+              <svg className="w-4 h-4 text-purple-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
               {isSigningMLDSA ? 'Executing Lattice Sign...' : `Generate ${selectedPqcParam} Signature`}
             </button>
 
