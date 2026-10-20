@@ -12,7 +12,6 @@ import {
   getOrCreateDeviceKey,
   exportPublicKeyHex,
   signPayload,
-  hashLocation,
   canonicalStringify,
 } from '@/lib/crypto';
 
@@ -25,9 +24,7 @@ interface MerkleWorkerOutput {
 }
 
 interface CanonicalPayload {
-  district: string;
   fileSizeBytes: number;
-  locationCommitment: string;
   merkleRoot: string;
   publicKey: string;
   timestamp: string;
@@ -275,51 +272,9 @@ export default function VideoRecorder() {
         'color: #cbd5e1;'
       );
 
-      // 3. Geolocation collection & salt commitment
-      let district = 'Local Node / Verified Region';
-      let lat = 12.9716;
-      let lon = 77.5946;
-
-      try {
-        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        if (timeZone) {
-          const parts = timeZone.split('/');
-          const city = parts[parts.length - 1].replace(/_/g, ' ');
-          district = `${city} Region (${timeZone})`;
-        }
-      } catch {
-        // fallback
-      }
-
-      if (typeof window !== 'undefined' && 'geolocation' in navigator) {
-        try {
-          const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(resolve, reject, {
-              timeout: 2000,
-              maximumAge: 60000,
-              enableHighAccuracy: false,
-            });
-          });
-          lat = pos.coords.latitude;
-          lon = pos.coords.longitude;
-        } catch {
-          // Keep timezone-derived region if GPS permission is declined or unavailable
-        }
-      }
-
-      const saltArray = new Uint8Array(16);
-      window.crypto.getRandomValues(saltArray);
-      const salt = Array.from(saltArray)
-        .map((b) => b.toString(16).padStart(2, '0'))
-        .join('');
-
-      const locationCommitment = await hashLocation(lat, lon, salt);
-
-      // 4. Construct canonical payload
+      // 3. Construct canonical payload (zero media bytes, purely cryptographic provenance)
       const canonicalPayload: CanonicalPayload = {
-        district,
         fileSizeBytes: workerOutput.fileSize,
-        locationCommitment,
         merkleRoot: workerOutput.merkleRoot,
         publicKey: publicKeyHex,
         timestamp: new Date().toISOString(),
@@ -327,7 +282,7 @@ export default function VideoRecorder() {
 
       setPayloadData(canonicalPayload);
 
-      // 5. Sign payload client-side with non-extractable private key
+      // 4. Sign payload client-side with non-extractable private key
       const sig = await signPayload(canonicalPayload, keyPair.privateKey);
       setSignatureHex(sig);
 
@@ -611,13 +566,13 @@ export default function VideoRecorder() {
                   </div>
 
                   <div>
-                    <span className="text-neutral-500 text-[10px] block">DISTRICT:</span>
-                    <span className="text-neutral-300">{payloadData.district}</span>
+                    <span className="text-neutral-500 text-[10px] block">PAYLOAD SIZE:</span>
+                    <span className="text-neutral-300">{(payloadData.fileSizeBytes / 1024).toFixed(1)} KB ({payloadData.fileSizeBytes.toLocaleString()} bytes)</span>
                   </div>
 
                   <div>
-                    <span className="text-neutral-500 text-[10px] block">LOCATION COMMITMENT:</span>
-                    <span className="text-neutral-300 break-all">{payloadData.locationCommitment}</span>
+                    <span className="text-neutral-500 text-[10px] block">TIMESTAMP (UTC):</span>
+                    <span className="text-neutral-300">{payloadData.timestamp}</span>
                   </div>
 
                   <div>

@@ -797,13 +797,10 @@ export function MediaCapture() {
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span>Salted GPS Commitment:</span>
-                          <span className="text-zinc-300 truncate max-w-[220px]" title={signedEnvelope.payload.location.commitmentHex}>
-                            0x{signedEnvelope.payload.location.commitmentHex}
+                          <span>Merkle Root:</span>
+                          <span className="text-zinc-300 truncate max-w-[220px]" title={signedEnvelope.payload.merkleRoot}>
+                            {signedEnvelope.payload.merkleRoot}
                           </span>
-                        </div>
-                        <div className="text-zinc-500 text-[9px]">
-                          Location: {signedEnvelope.payload.location.latitude.toFixed(4)}, {signedEnvelope.payload.location.longitude.toFixed(4)} (Salt: {signedEnvelope.payload.location.saltHex.substring(0, 12)}...)
                         </div>
                       </div>
                     )}

@@ -40,8 +40,8 @@ interface AnchoredProof {
   merkleRoot: string;
   fileSizeBytes: number;
   timestamp: string;
-  district: string;
-  locationCommitment: string;
+  district?: string;
+  locationCommitment?: string;
   publicKey: string;
   signature: string;
   txHash: string;
@@ -281,15 +281,26 @@ function VerifyContent() {
       }
 
       // C. Reconstructed TrueFrame canonical payload
-      const reconstructed = {
-        district: targetProof.district,
+      const reconstructed: Record<string, any> = {
         fileSizeBytes: targetProof.fileSizeBytes,
-        locationCommitment: targetProof.locationCommitment,
         merkleRoot: targetProof.merkleRoot,
         publicKey: targetProof.publicKey,
         timestamp: targetProof.timestamp,
       };
       candidates.push(canonicalStringify(reconstructed));
+
+      // D. Legacy candidate if proof has legacy location fields
+      if (targetProof.district || targetProof.locationCommitment) {
+        const legacyReconstructed: Record<string, any> = {
+          district: targetProof.district || '',
+          fileSizeBytes: targetProof.fileSizeBytes,
+          locationCommitment: targetProof.locationCommitment || '',
+          merkleRoot: targetProof.merkleRoot,
+          publicKey: targetProof.publicKey,
+          timestamp: targetProof.timestamp,
+        };
+        candidates.push(canonicalStringify(legacyReconstructed));
+      }
 
       for (const candidateJson of candidates) {
         try {
@@ -557,11 +568,13 @@ function VerifyContent() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="bg-neutral-900/60 border border-neutral-800 p-4 space-y-1">
                 <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-500 block">
-                  Anchored District
+                  Anchored Payload Size
                 </span>
-                <p className="text-xs text-neutral-200 font-medium">{proof.district}</p>
-                <span className="font-mono text-[10px] text-neutral-500 block">
-                  Location Commitment Verified
+                <p className="text-xs text-neutral-200 font-medium">
+                  {(proof.fileSizeBytes / 1024).toFixed(1)} KB ({proof.fileSizeBytes.toLocaleString()} bytes)
+                </p>
+                <span className="font-mono text-[10px] text-emerald-400 block">
+                  Zero Media Upload Verified
                 </span>
               </div>
 
@@ -725,8 +738,8 @@ function VerifyContent() {
                 {verdict === 'original' && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 font-mono text-xs">
                     <div className="bg-neutral-950 p-3 border border-neutral-800 space-y-1">
-                      <span className="text-neutral-500 text-[10px] block">GEOLOCATIONAL DISTRICT:</span>
-                      <span className="text-neutral-200">{proof.district}</span>
+                      <span className="text-neutral-500 text-[10px] block">VERIFIED PAYLOAD SIZE:</span>
+                      <span className="text-neutral-200">{(proof.fileSizeBytes / 1024).toFixed(1)} KB ({proof.fileSizeBytes.toLocaleString()} bytes)</span>
                     </div>
 
                     <div className="bg-neutral-950 p-3 border border-neutral-800 space-y-1">
@@ -813,9 +826,9 @@ function VerifyContent() {
                 </div>
 
                 <div className="flex justify-between py-1">
-                  <span className="text-neutral-500">04 // Zero-Knowledge Salted Location</span>
-                  <span className="text-neutral-400 truncate max-w-xs" title={proof.locationCommitment}>
-                    {proof.locationCommitment.substring(0, 24)}...
+                  <span className="text-neutral-500">04 // Key Security Attribute</span>
+                  <span className="text-emerald-400 font-mono text-xs">
+                    extractable: false (Enclave Isolated)
                   </span>
                 </div>
               </div>

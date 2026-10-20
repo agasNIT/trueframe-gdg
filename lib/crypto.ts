@@ -129,24 +129,4 @@ export async function signPayload(payload: object, privateKey: CryptoKey): Promi
   return bufferToHex(signatureBuffer);
 }
 
-/**
- * Produces a SHA-256 hash of the normalized coordinate string formatted as:
- * lat.toFixed(6) + '|' + lon.toFixed(6) + '|' + salt
- *
- * @param lat Latitude in decimal degrees.
- * @param lon Longitude in decimal degrees.
- * @param salt High-entropy salt/nonce string.
- * @returns Promise<string> Hexadecimal representation of the SHA-256 digest.
- */
-export async function hashLocation(lat: number, lon: number, salt: string): Promise<string> {
-  if (typeof window === 'undefined' || !window.crypto?.subtle) {
-    throw new Error('WebCrypto API (window.crypto.subtle) is only available in a browser execution environment.');
-  }
 
-  const rawLocationString = `${lat.toFixed(6)}|${lon.toFixed(6)}|${salt}`;
-  const encoder = new TextEncoder();
-  const data = encoder.encode(rawLocationString);
-
-  const digestBuffer = await window.crypto.subtle.digest('SHA-256', data);
-  return bufferToHex(digestBuffer);
-}

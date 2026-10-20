@@ -40,12 +40,8 @@ flowchart TD
 
         Cam --> Forensic
         
-        GPS["GPS Coordinates"] --> SaltedGPS["Salted Location Commitment"]
-        Salt["Cryptographic Salt"] --> SaltedGPS
-        
         Root --> Canonical["RFC 8785 Canonical JSON Payload"]
         PubKey --> Canonical
-        SaltedGPS --> Canonical
         
         Canonical --> Signer["crypto.subtle.sign"]
         PrivKey --> Signer
@@ -88,7 +84,6 @@ Video files are processed in-memory as local `Blob` objects and cached client-si
 - Merkle root digest (32 bytes)
 - Device public key (JWK)
 - Digital signatures (ECDSA + simulated ML-DSA)
-- Salted privacy-preserving location commitment
 *Raw visual or audio data is never transmitted, stored on servers, or exposed to intermediaries.*
 
 ### 2. Streaming 256KB-Chunked Merkle Tree Engine
@@ -112,30 +107,23 @@ crypto.subtle.generateKey(
 
 ### 4. RFC 8785 Canonical JSON Serialization
 To prevent signature verification failures caused by JSON key re-ordering, spacing discrepancies, or float representation shifts, payloads are canonicalized using RFC 8785 rules prior to signing:
-```typescript
+```json
 {
-  "district": "Metropolitan Region",
   "fileSizeBytes": 15428904,
-  "locationCommitment": "0a8f9c1b...",
-  "merkleRoot": "3e9b17c2...",
-  "publicKey": { ... },
-  "timestamp": 1729340000000
+  "merkleRoot": "3e9b17c2a8f9c1b...",
+  "publicKey": "048c24e3c11c598...",
+  "timestamp": "2026-10-20T18:00:00.000Z"
 }
 ```
 
-### 5. Privacy-Preserving Salted Geo-Commitments
-Precise user GPS coordinates are never leaked to public blockchains. TrueFrame creates a zero-knowledge commitment:
-$$\text{Commitment} = \text{SHA-256}(\text{Latitude} \,\|\, \text{Longitude} \,\|\, \text{Salt})$$
-The user preserves verifiable proof of location while revealing only broad district metadata publicly.
-
-### 6. Dual-Layer Visual and Steganographic Watermarking
+### 5. Dual-Layer Visual and Steganographic Watermarking
 - **Overt Dynamic HUD:** Real-time semi-transparent heads-up display rendering device timestamp, recording duration, and rolling SHA-256 hash frame.
 - **Covert Pixel Steganography:** Bitwise LSB injection into the blue channel of coordinate $(0,0)$ on each recorded frame, encoding a cryptographic tamper marker.
 
-### 7. Post-Quantum Cryptography (PQC) Bridge
+### 6. Post-Quantum Cryptography (PQC) Bridge
 Anticipating cryptanalytically relevant quantum computers (CRQCs) capable of breaking elliptic curves via Shor's algorithm, TrueFrame includes a dual-signature architecture implementing a client-side simulation of **NIST FIPS 204 ML-DSA (Module-Lattice-Based Digital Signature Algorithm / Dilithium)**.
 
-### 8. Polygon Amoy Blockchain Anchoring
+### 7. Polygon Amoy Blockchain Anchoring
 The metadata digest is immutably anchored on Polygon Amoy (Chain ID `80002`):
 - **Smart Contract:** [`AnchorRegistry.sol`](contracts/AnchorRegistry.sol)
 - **Automatic Fallback:** The serverless relayer route (`app/api/anchor/route.ts`) handles network retries and includes an automatic simulation fallback to guarantee zero 500 crashes during demonstrations or unfunded testnet faucet intervals.
@@ -162,7 +150,7 @@ rec/
 |-- contracts/
 |   \-- AnchorRegistry.sol        # Solidity 0.8.24 registry contract for Polygon
 |-- lib/
-|   |-- crypto.ts                 # WebCrypto ECDSA, canonical stringify, location commitment
+|   |-- crypto.ts                 # WebCrypto ECDSA, canonical stringify
 |   \-- crypto/
 |       \-- pqc.ts                # NIST FIPS 204 ML-DSA lattice post-quantum simulation
 |-- public/                       # PWA icons and static assets
@@ -289,9 +277,19 @@ contract AnchorRegistry {
 | **Server Compromise / Cloud Leaks** | Zero-upload model: raw video never touches the server. |
 | **Deepfake Frame Insertion** | 256KB-chunked Merkle tree guarantees any altered bit changes the root hash. |
 | **Key Extraction / Man-in-the-Browser** | WebCrypto keys created with `extractable: false`, backed by hardware TEE/Enclave. |
-| **Location Tracking & Surveillance** | Salted SHA-256 commitments reveal only coarse district names publicly. |
 | **Quantum Decryption Attacks** | NIST FIPS 204 ML-DSA lattice dual-signature simulation layer. |
 | **Replay Attacks** | Proof ID binds timestamp, unique device public key, and Merkle root. |
+
+---
+
+## References and Standards
+
+1. **NIST FIPS 204 (ML-DSA):** National Institute of Standards and Technology. *Module-Lattice-Based Digital Signature Standard*. Finalized August 2024. [https://csrc.nist.gov/pubs/fips/204/final](https://csrc.nist.gov/pubs/fips/204/final)
+2. **W3C Web Cryptography API:** World Wide Web Consortium. *Web Cryptography API Recommendation*. [https://www.w3.org/TR/WebCryptoAPI/](https://www.w3.org/TR/WebCryptoAPI/)
+3. **RFC 8785 (JCS):** Internet Engineering Task Force (IETF). *JSON Canonicalization Scheme (JCS)*. [https://datatracker.ietf.org/doc/html/rfc8785](https://datatracker.ietf.org/doc/html/rfc8785)
+4. **RFC 6962 (Certificate Transparency):** Internet Engineering Task Force (IETF). *Certificate Transparency Binary Merkle Hash Trees*. [https://datatracker.ietf.org/doc/html/rfc6962](https://datatracker.ietf.org/doc/html/rfc6962)
+5. **Polygon Proof-of-Stake & Amoy Testnet:** Polygon Technology. *Polygon PoS Architecture and Amoy Testnet Specifications*. [https://docs.polygon.technology/pos/](https://docs.polygon.technology/pos/)
+6. **W3C Media Capture and Streams:** World Wide Web Consortium. *Media Capture and Streams Specification*. [https://www.w3.org/TR/mediacapture-streams/](https://www.w3.org/TR/mediacapture-streams/)
 
 ---
 
